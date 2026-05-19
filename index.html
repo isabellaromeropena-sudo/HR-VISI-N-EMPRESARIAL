@@ -176,9 +176,9 @@ const app=document.getElementById('app');
 let tTimer=null;
 
 function toast(msg){S.toast=msg;render();clearTimeout(tTimer);tTimer=setTimeout(()=>{S.toast=null;render();},2500);}
-function go(partial){Object.assign(S,partial);render();}
-function sf(k,v){S.form={...S.form,[k]:v};render();}
-function sfx(eye,k,v){S.form={...S.form,[eye]:{...S.form[eye],[k]:v}};render();}
+function go(partial){Object.assign(S,partial);}
+function sf(k,v){S.form={...S.form,[k]:v};}
+function sfx(eye,k,v){S.form={...S.form,[eye]:{...S.form[eye],[k]:v}};}
 
 function doSave(){
   if(!S.form.nombre.trim()){toast('⚠️ El nombre es requerido');return;}
