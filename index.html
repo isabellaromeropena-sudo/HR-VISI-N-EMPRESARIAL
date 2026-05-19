@@ -293,24 +293,24 @@ function vForm(){
 </div>
 
 <div class="sl">Datos del paciente</div>
-<div class="f"><label>Nombre completo *</label><input value="${esc(f.nombre)}" oninput="sf('nombre',this.value)" placeholder="Nombre completo"/></div>
+<div class="f"><label>Nombre completo *</label><input value="${esc(f.nombre)}" onchange="sf('nombre',this.value)" placeholder="Nombre completo"/></div>
 <div class="fr">
-  <div class="f"><label>Cédula</label><input type="tel" value="${esc(f.cedula)}" oninput="sf('cedula',this.value)" placeholder="12345678"/></div>
+  <div class="f"><label>Cédula</label><input type="tel" value="${esc(f.cedula)}" onchange="sf('cedula',this.value)" placeholder="12345678"/></div>
   <div class="f"><label>Edad</label><input type="number" value="${esc(f.edad)}" oninput="sf('edad',this.value)" placeholder="35"/></div>
 </div>
-<div class="f"><label>Teléfono</label><input type="tel" value="${esc(f.telefono)}" oninput="sf('telefono',this.value)" placeholder="300 000 0000"/></div>
-<div class="f"><label>Dirección</label><input value="${esc(f.direccion)}" oninput="sf('direccion',this.value)" placeholder="Calle 10 # 5-20"/></div>
-<div class="f"><label>Ciudad</label><input value="${esc(f.ciudad)}" oninput="sf('ciudad',this.value)" placeholder="Bogotá"/></div>
+<div class="f"><label>Teléfono</label><input type="tel" value="${esc(f.telefono)}" onchange="sf('telefono',this.value)" placeholder="300 000 0000"/></div>
+<div class="f"><label>Dirección</label><input value="${esc(f.direccion)}" onchange="sf('direccion',this.value)" placeholder="Calle 10 # 5-20"/></div>
+<div class="f"><label>Ciudad</label><input value="${esc(f.ciudad)}" onchange="sf('ciudad',this.value)" placeholder="Bogotá"/></div>
 
 <div class="sl">Empresa</div>
-<div class="f"><label>Nombre empresa</label><input value="${esc(f.empresa)}" oninput="sf('empresa',this.value)" placeholder="Empresa S.A.S."/></div>
-<div class="f"><label>NIT empresa</label><input type="tel" value="${esc(f.nit)}" oninput="sf('nit',this.value)" placeholder="900123456-1"/></div>
+<div class="f"><label>Nombre empresa</label><input value="${esc(f.empresa)}" onchange="sf('empresa',this.value)" placeholder="Empresa S.A.S."/></div>
+<div class="f"><label>NIT empresa</label><input type="tel" value="${esc(f.nit)}" onchange="sf('nit',this.value)" placeholder="900123456-1"/></div>
 
 <div class="sl">Fórmula óptica</div>
 <div class="ftbl">
   <div class="fr2"><div class="fc hd"></div><div class="fc hd">Esfera</div><div class="fc hd">Cilindro</div><div class="fc hd">Eje</div><div class="fc hd">Adición</div></div>
-  <div class="fr2"><div class="fc ey">OD</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input value="${esc(f.od[k])}" oninput="sfx('od','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
-  <div class="fr2"><div class="fc ey">OI</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input value="${esc(f.oi[k])}" oninput="sfx('oi','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
+  <div class="fr2"><div class="fc ey">OD</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input value="${esc(f.od[k])}" onchange="sfx('od','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
+  <div class="fr2"><div class="fc ey">OI</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input value="${esc(f.oi[k])}" onchange="sfx('oi','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
 </div>
 
 <div class="sl">Lente y montura</div>
@@ -320,11 +320,11 @@ function vForm(){
   ${['Monofocal','Bifocal','Progresivo','Antirreflejo','Fotocromático','Ocupacional','Contacto'].map(t=>`<option value="${t}" ${f.tipoLente===t?'selected':''}>${t}</option>`).join('')}
 </select></div>
 <div class="fr">
-  <div class="f"><label>Valor lente ($)</label><input type="number" inputmode="numeric" value="${esc(f.valorLente)}" oninput="sf('valorLente',this.value)" placeholder="0"/></div>
+  <div class="f"><label>Valor lente ($)</label><input type="number" inputmode="numeric" value="${esc(f.valorLente)}" onblur="sf('valorLente',this.value)" placeholder="0"/></div>
   <div class="f"><label>Total venta</label><input readonly class="c-blue" value="${fmt(tot)}"/></div>
 </div>
 <div class="f"><label>Montura (marca / referencia)</label><input value="${esc(f.montura)}" oninput="sf('montura',this.value)" placeholder="Ray-Ban RB3025, código…"/></div>
-<div class="f"><label>Valor montura ($)</label><input type="number" inputmode="numeric" value="${esc(f.valorMontura)}" oninput="sf('valorMontura',this.value)" placeholder="0"/></div>
+<div class="f"><label>Valor montura ($)</label><input type="number" inputmode="numeric" value="${esc(f.valorMontura)}" onblur="sf('valorMontura',this.value)" placeholder="0"/></div>
 
 <div class="sl">💵 Abono y saldo</div>
 <div class="fr">
