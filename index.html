@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#0a1628"/>
+<title>HR Visión · Jornadas</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a1628;--bg2:#111e35;--bg3:#172540;
+  --blue:#3b82f6;--blue2:#60a5fa;--blue3:rgba(59,130,246,0.15);
+  --green:#22c55e;--green2:rgba(34,197,94,0.15);
+  --amber:#f59e0b;--amber2:rgba(245,158,11,0.15);
+  --red:#ef4444;--red2:rgba(239,68,68,0.15);
+  --white:#f0f6ff;--gray:#64748b;--gray2:#94a3b8;--gray3:#cbd5e1;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --r:16px;--r2:12px;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);color:var(--white)}
+#app{height:100%;display:flex;flex-direction:column}
+.screen{display:flex;flex-direction:column;height:100%}
+.topbar{padding:calc(var(--safe-t) + 12px) 20px 12px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.topbar-sub{font-size:11px;color:var(--gray2);margin-top:1px}
+.topbar-badge{background:var(--blue3);border:1px solid rgba(59,130,246,.3);color:var(--blue2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:16px}
+.bottomnav{display:flex;background:var(--bg2);border-top:1px solid var(--border);padding-bottom:var(--safe-b);flex-shrink:0}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:none;background:none;color:var(--gray);font-size:10px;font-weight:600;font-family:var(--font);cursor:pointer;letter-spacing:.02em;text-transform:uppercase}
+.bn.on{color:var(--blue2)}
+.bn svg{width:22px;height:22px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 4px}
+.stat-pill{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:14px;position:relative;overflow:hidden}
+.stat-pill::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.sp-b::before{background:var(--blue)}.sp-g::before{background:var(--green)}.sp-r::before{background:var(--red)}.sp-a::before{background:var(--amber)}
+.sp-l{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--gray2);font-weight:600}
+.sp-v{font-size:18px;font-weight:800;margin-top:4px;line-height:1.1;word-break:break-word}
+.sp-s{font-size:10px;color:var(--gray);margin-top:2px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:10px 16px 0}
+.ch{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.ch-t{font-size:13px;font-weight:700;color:var(--gray3)}
+.ch-a{background:none;border:none;color:var(--blue2);font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer}
+.pi{padding:13px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);cursor:pointer}
+.pi:last-child{border-bottom:none}
+.pi:active{background:rgba(255,255,255,.04)}
+.av{width:42px;height:42px;border-radius:12px;background:var(--blue3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--blue2);flex-shrink:0}
+.av-r{background:var(--red2)!important;color:var(--red)!important}
+.pi-info{flex:1;min-width:0}
+.pi-n{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-s{font-size:11.5px;color:var(--gray2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-r{text-align:right;flex-shrink:0}
+.pi-amt{font-size:13px;font-weight:800;color:var(--blue2)}
+.bdg{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:700}
+.bdg.paid{background:var(--green2);color:var(--green)}.bdg.partial{background:var(--amber2);color:var(--amber)}.bdg.pending{background:var(--red2);color:var(--red)}
+.pb{background:rgba(255,255,255,.08);border-radius:99px;height:5px}
+.pf{height:100%;border-radius:99px;background:var(--blue)}
+.pf.done{background:var(--green)}.pf.mid{background:var(--amber)}
+.sw{padding:12px 16px 4px;position:relative}
+.sw input{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r2);padding:12px 14px 12px 40px;color:var(--white);font-size:16px;outline:none;font-family:var(--font);-webkit-appearance:none}
+.sw input::placeholder{color:var(--gray)}
+.sw input:focus{border-color:var(--blue)}
+.si{position:absolute;left:29px;top:50%;transform:translateY(-50%);color:var(--gray);pointer-events:none}
+.chips{display:flex;gap:8px;padding:8px 16px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;border:1.5px solid var(--border2);color:var(--gray2);background:none;white-space:nowrap;cursor:pointer;font-family:var(--font);flex-shrink:0}
+.chip.on{background:var(--blue3);border-color:var(--blue);color:var(--blue2)}
+.fab{position:fixed;bottom:calc(72px + var(--safe-b) + 14px);right:20px;width:56px;height:56px;background:var(--blue);border-radius:50%;border:none;color:white;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,.5);cursor:pointer;z-index:40}
+.fab:active{transform:scale(.92)}
+.empty{text-align:center;padding:56px 28px;color:var(--gray)}
+.empty span{font-size:44px;display:block;margin-bottom:12px}
+.empty p{font-size:14px;line-height:1.6}
+
+/* ── FORM — inputs never trigger re-render ── */
+.fw{padding:0 16px}
+.sl{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--blue2);font-weight:700;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.sl::after{content:'';flex:1;height:1px;background:var(--border2)}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.f label{font-size:12px;color:var(--gray2);font-weight:600}
+.f input,.f select{background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r2);padding:13px 14px;color:var(--white);font-size:16px;outline:none;font-family:var(--font);width:100%;-webkit-appearance:none}
+.f input:focus,.f select:focus{border-color:var(--blue)}
+.f input::placeholder{color:var(--gray)}
+.f select option{background:var(--bg2)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Computed readonly fields */
+.ro-blue{background:rgba(59,130,246,.08)!important;border-color:rgba(59,130,246,.3)!important;color:var(--blue2)!important;font-weight:700!important}
+.ro-green{background:rgba(34,197,94,.08)!important;border-color:rgba(34,197,94,.3)!important;color:var(--green)!important;font-weight:700!important}
+.ro-amber{background:rgba(245,158,11,.08)!important;border-color:rgba(245,158,11,.3)!important;color:var(--amber)!important;font-weight:700!important}
+.ro-red{background:rgba(239,68,68,.08)!important;border-color:rgba(239,68,68,.3)!important;color:var(--red)!important;font-weight:700!important}
+/* Formula table */
+.ftbl{width:100%;border:1.5px solid var(--border2);border-radius:var(--r2);overflow:hidden;margin-bottom:12px}
+.fr2{display:grid;grid-template-columns:46px 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border)}
+.fr2:last-child{border-bottom:none}
+.fc{padding:9px 4px;text-align:center;font-size:12px}
+.fc.hd{background:rgba(0,0,0,.25);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--gray2);font-weight:700}
+.fc.ey{font-weight:800;color:var(--blue2);font-size:11px;background:rgba(59,130,246,.08);display:flex;align-items:center;justify-content:center}
+.fc input{width:100%;background:transparent;border:none;outline:none;color:var(--white);font-size:14px;text-align:center;font-family:var(--font);padding:0}
+.fc input::placeholder{color:var(--gray);font-size:12px}
+/* Saldo summary box */
+.sb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);display:grid;grid-template-columns:1fr 1fr 1fr;margin-bottom:10px}
+.sbi{padding:12px 8px;text-align:center;border-right:1px solid var(--border)}
+.sbi:last-child{border-right:none}
+.sbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--gray2);font-weight:700}
+.sbv{font-size:15px;font-weight:800;margin-top:4px;word-break:break-word}
+.save-btn{width:100%;padding:16px;background:var(--blue);color:white;border:none;border-radius:var(--r2);font-size:16px;font-weight:800;font-family:var(--font);cursor:pointer;margin-top:8px;letter-spacing:-.2px}
+.save-btn:active{background:#2563eb}
+/* Sheet */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:flex-end}
+.sh{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-height:92vh;display:flex;flex-direction:column;padding-bottom:var(--safe-b)}
+.sh-hnd{width:36px;height:4px;background:var(--border2);border-radius:99px;margin:10px auto 0}
+.sh-head{padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.sh-head h2{font-size:17px;font-weight:800}
+.sh-scr{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 20px;flex:1}
+.dr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.dr:last-child{border-bottom:none}
+.dr-l{font-size:12px;color:var(--gray2);font-weight:500}
+.dr-v{font-size:13px;font-weight:700;text-align:right;max-width:60%}
+.sh-foot{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
+.sh-foot button{flex:1;padding:13px;border-radius:var(--r2);border:none;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer}
+.ab-form{background:var(--bg3);border:1px solid rgba(34,197,94,.2);border-radius:var(--r2);padding:14px;margin:12px 0}
+.ab-ttl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--green);font-weight:700;margin-bottom:10px}
+.ab-list{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.ab-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:8px;padding:9px 12px}
+.ab-amt{font-size:14px;font-weight:800;color:var(--green)}
+.ab-dt{font-size:11px;color:var(--gray2)}
+.ab-del{background:none;border:none;color:var(--gray);font-size:18px;cursor:pointer;padding:2px 6px}
+.cb{background:var(--blue3);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cb-l{font-size:10px;color:var(--blue2);font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.cb-v{font-size:20px;font-weight:800}
+.sl2{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue2);font-weight:700;margin:14px 0 8px}
+.toast{position:fixed;bottom:calc(80px + var(--safe-b));left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--blue);border-radius:12px;padding:11px 20px;font-size:13.5px;font-weight:600;z-index:200;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:tin .25s ease}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.back-btn{background:none;border:none;color:var(--blue2);font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;padding:0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const KEY='hr_jornadas_v2';
+const fmt=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n||0);
+const tod=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const ef=()=>({esfera:'',cilindro:'',eje:'',adicion:''});
+const load=()=>{try{const d=localStorage.getItem(KEY);return d?JSON.parse(d):[]}catch{return[]}};
+const save=d=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}};
+const esc=v=>String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+const tvp=p=>(parseFloat(p.valorLente)||0)+(parseFloat(p.valorMontura)||0);
+const tap=p=>(p.abonos||[]).reduce((s,a)=>s+a.monto,0);
+const tsp=p=>tvp(p)-tap(p);
+const estp=p=>{const v=tvp(p),a=tap(p);if(v===0)return'pending';if(a>=v)return'paid';if(a>0)return'partial';return'pending';};
+const elbl=e=>e==='paid'?'Pagado':e==='partial'?'Parcial':'Pendiente';
+const emptyRec=()=>({id:uid(),control:'',nombre:'',fecha:tod(),cedula:'',correo:'',nit:'',empresa:'',edad:'',telefono:'',direccion:'',ciudad:'',od:ef(),oi:ef(),laboratorio:'',ordenLab:'',tipoLente:'',valorLente:'',montura:'',valorMontura:'',abonoInicial:'',abonos:[]});
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let S={view:'home',records:load(),search:'',filter:'all',form:emptyRec(),detail:null,toast:null,abAmt:'',abFecha:tod()};
+const app=document.getElementById('app');
+let tTimer=null;
+
+function showToast(msg){S.toast=msg;const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);clearTimeout(tTimer);tTimer=setTimeout(()=>t.remove(),2400);}
+
+// ── CRITICAL: Field update WITHOUT re-render ──────────────────────────────────
+// Plain text / date / tel fields — just store, no redraw
+function sf(k,v){ S.form[k]=v; }
+// Formula fields
+function sfx(eye,k,v){ S.form[eye][k]=v; }
+
+// Numeric fields that affect computed values — store + update computed DOM only
+function sfn(k,v){
+  S.form[k]=v;
+  updateComputed();
+}
+
+function updateComputed(){
+  const f=S.form;
+  const tot=(parseFloat(f.valorLente)||0)+(parseFloat(f.valorMontura)||0);
+  const ai=parseFloat(f.abonoInicial)||0;
+  const sd=Math.max(0,tot-ai);
+  const pct=tot>0?Math.min(100,(ai/tot)*100):0;
+
+  // Total venta
+  const elTot=document.getElementById('c-total');
+  if(elTot) elTot.value=fmt(tot);
+
+  // Saldo
+  const elSd=document.getElementById('c-saldo');
+  if(elSd){
+    elSd.value=tot>0?fmt(sd):'—';
+    elSd.className='';
+    if(tot>0){
+      if(sd===0) elSd.className='ro-green';
+      else if(ai>0) elSd.className='ro-amber';
+      else elSd.className='ro-red';
+    }
+  }
+
+  // Summary box
+  const elSbTot=document.getElementById('sb-tot');
+  const elSbAb=document.getElementById('sb-ab');
+  const elSbSd=document.getElementById('sb-sd');
+  const elSbox=document.getElementById('saldo-box');
+  if(elSbox){
+    if(tot>0){
+      elSbox.style.display='grid';
+      if(elSbTot) elSbTot.textContent=fmt(tot);
+      if(elSbAb)  elSbAb.textContent=fmt(ai);
+      if(elSbSd){
+        elSbSd.textContent=fmt(sd);
+        elSbSd.style.color=sd===0?'var(--green)':ai>0?'var(--amber)':'var(--red)';
+      }
+    } else {
+      elSbox.style.display='none';
+    }
+  }
+
+  // Progress bar
+  const elPf=document.getElementById('pf-form');
+  const elPl=document.getElementById('pl-form');
+  const elPw=document.getElementById('pw-form');
+  if(elPw) elPw.style.display=tot>0?'block':'none';
+  if(elPf){
+    elPf.style.width=pct+'%';
+    elPf.className='pf'+(pct>=100?' done':pct>0?' mid':'');
+  }
+  if(elPl) elPl.textContent=pct.toFixed(0)+'% pagado al registrar';
+}
+
+// ── Navigation (full re-render only on view change) ───────────────────────────
+function go(partial){
+  // Flush current form input values before navigating away
+  if(S.view==='new'||S.view==='edit') flushForm();
+  Object.assign(S,partial);
+  render();
+}
+
+// Read all live input values from DOM into S.form before save / navigate
+function flushForm(){
+  const ids=['control','nombre','fecha','cedula','correo','nit','empresa','edad','telefono','direccion','ciudad','laboratorio','ordenLab','tipoLente','valorLente','montura','valorMontura','abonoInicial'];
+  ids.forEach(k=>{const el=document.getElementById('fi-'+k);if(el)S.form[k]=el.value;});
+  // Formula
+  ['od','oi'].forEach(eye=>{
+    ['esfera','cilindro','eje','adicion'].forEach(k=>{
+      const el=document.getElementById('fi-'+eye+'-'+k);
+      if(el)S.form[eye][k]=el.value;
+    });
+  });
+}
+
+function doSave(){
+  flushForm();
+  if(!S.form.nombre.trim()){showToast('⚠️ El nombre es requerido');return;}
+  const ai=parseFloat(S.form.abonoInicial)||0;
+  let rec={...S.form,abonoInicial:undefined};
+  if(S.view==='new'&&ai>0) rec={...rec,abonos:[{id:uid(),monto:ai,fecha:rec.fecha}]};
+  else if(S.view==='new') rec={...rec,abonos:[]};
+  if(S.view==='new'){S.records=[{...rec,id:uid()},...S.records];}
+  else{S.records=S.records.map(r=>r.id===rec.id?rec:r);S.detail=rec;}
+  save(S.records);
+  showToast(S.view==='new'?'✅ Paciente guardado':'✅ Actualizado');
+  S.view='list'; render();
+}
+
+function doDel(id){
+  if(!confirm('¿Eliminar este registro?'))return;
+  S.records=S.records.filter(r=>r.id!==id);
+  save(S.records);showToast('🗑️ Eliminado');S.detail=null;render();
+}
+
+function doAbono(){
+  const m=parseFloat(document.getElementById('ab-amt-i').value||S.abAmt);
+  const fecha=document.getElementById('ab-fecha-i').value||S.abFecha;
+  if(!m||m<=0){showToast('⚠️ Valor inválido');return;}
+  const p=S.detail;
+  const upd={...p,abonos:[...(p.abonos||[]),{id:uid(),monto:m,fecha}]};
+  S.records=S.records.map(r=>r.id===p.id?upd:r);
+  save(S.records);S.detail=upd;S.abAmt='';S.abFecha=tod();
+  showToast('✅ Abono registrado');render();
+}
+
+function delAbono(pid,aid){
+  const p=S.records.find(r=>r.id===pid);
+  const upd={...p,abonos:p.abonos.filter(a=>a.id!==aid)};
+  S.records=S.records.map(r=>r.id===pid?upd:r);
+  save(S.records);S.detail=upd;render();
+}
+
+function openDetail(id){const p=S.records.find(r=>r.id===id);if(p){S.detail=p;S.abAmt='';S.abFecha=tod();render();}}
+function openNew(){S.form=emptyRec();S.detail=null;S.view='new';render();}
+function openEdit(id){const p=S.records.find(r=>r.id===id);if(p){S.form={...p,abonos:[...p.abonos],abonoInicial:''};S.detail=null;S.view='edit';render();}}
+
+// ── Views ─────────────────────────────────────────────────────────────────────
+function vHome(){
+  const recs=S.records;
+  const tot=recs.reduce((s,r)=>s+tvp(r),0);
+  const cob=recs.reduce((s,r)=>s+tap(r),0);
+  const pen=recs.reduce((s,r)=>s+Math.max(0,tsp(r)),0);
+  const rec5=[...recs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,5);
+  const pen5=recs.filter(r=>tsp(r)>0).sort((a,b)=>tsp(b)-tsp(a)).slice(0,4);
+  return`
+<div class="screen">
+<div class="topbar"><div><div class="topbar-title">👁️ HR Visión</div><div class="topbar-sub">Jornadas ópticas en campo</div></div><div class="topbar-badge">${recs.length} pacientes</div></div>
+<div class="scroll">
+<div class="stat-grid">
+  <div class="stat-pill sp-b"><div class="sp-l">Total ventas</div><div class="sp-v" style="color:var(--blue2)">${fmt(tot)}</div><div class="sp-s">facturado</div></div>
+  <div class="stat-pill sp-g"><div class="sp-l">Cobrado</div><div class="sp-v" style="color:var(--green)">${fmt(cob)}</div><div class="sp-s">recibido</div></div>
+  <div class="stat-pill sp-r"><div class="sp-l">Por cobrar</div><div class="sp-v" style="color:var(--red)">${fmt(pen)}</div><div class="sp-s">pendiente</div></div>
+  <div class="stat-pill sp-a"><div class="sp-l">Pacientes</div><div class="sp-v" style="color:var(--amber)">${recs.length}</div><div class="sp-s">registrados</div></div>
+</div>
+${rec5.length?`<div class="card"><div class="ch"><span class="ch-t">🕐 Recientes</span><button class="ch-a" onclick="go({view:'list'})">Ver todos →</button></div>${rec5.map(r=>`
+<div class="pi" onclick="openDetail('${r.id}')">
+  <div class="av">${r.nombre.charAt(0).toUpperCase()}</div>
+  <div class="pi-info"><div class="pi-n">${r.nombre}</div><div class="pi-s">${r.empresa||'Sin empresa'} · ${r.fecha}</div></div>
+  <div class="pi-r"><div class="pi-amt">${fmt(tvp(r))}</div><div style="font-size:11px;margin-top:2px;color:${tsp(r)>0?'var(--red)':'var(--green)'}">${tsp(r)>0?fmt(tsp(r))+' debe':'Pagado'}</div></div>
+</div>`).join('')}</div>`:''}
+${pen5.length?`<div class="card"><div class="ch"><span class="ch-t">⚠️ Saldos pendientes</span></div>${pen5.map(r=>{const v=tvp(r),a=tap(r),pct=v?(a/v)*100:0;return`
+<div class="pi" onclick="openDetail('${r.id}')">
+  <div class="av av-r">${r.nombre.charAt(0).toUpperCase()}</div>
+  <div class="pi-info"><div class="pi-n">${r.nombre}</div><div style="margin-top:5px"><div class="pb"><div class="pf mid" style="width:${pct}%"></div></div></div><div style="font-size:10.5px;color:var(--gray2);margin-top:2px">${pct.toFixed(0)}% pagado</div></div>
+  <div class="pi-r"><div style="font-size:14px;font-weight:800;color:var(--red)">${fmt(tsp(r))}</div><div style="font-size:11px;color:var(--gray2)">pendiente</div></div>
+</div>`}).join('')}</div>`:''}
+<div style="height:20px"></div>
+</div>
+${navBar()}
+</div>`;
+}
+
+function vList(){
+  const recs=S.records.filter(r=>{
+    const q=S.search.toLowerCase();
+    const m=!q||r.nombre.toLowerCase().includes(q)||r.cedula.includes(q)||(r.empresa||'').toLowerCase().includes(q)||r.control.includes(q)||(r.ciudad||'').toLowerCase().includes(q);
+    return m&&(S.filter==='all'||estp(r)===S.filter);
+  }).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  return`
+<div class="screen">
+<div class="topbar"><div><div class="topbar-title">📋 Pacientes</div><div class="topbar-sub">${recs.length} resultado${recs.length!==1?'s':''}</div></div><div style="display:flex;gap:6px"><button onclick="doImport()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--gray2);font-size:11px;font-weight:700;font-family:var(--font);padding:6px 10px;border-radius:8px;cursor:pointer">↑ Importar</button><button onclick="doExport()" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:var(--green);font-size:11px;font-weight:700;font-family:var(--font);padding:6px 10px;border-radius:8px;cursor:pointer">↓ Excel</button></div></div>
+<div class="scroll">
+<div class="sw">
+  <svg class="si" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <input placeholder="Nombre, cédula, empresa, control…" value="${esc(S.search)}" oninput="S.search=this.value;filterList()" type="search" id="search-input"/>
+</div>
+<div class="chips" id="filter-chips">
+  ${[['all','Todos'],['pending','Pendiente'],['partial','Parcial'],['paid','Pagado']].map(([v,l])=>`<button class="chip${S.filter===v?' on':''}" onclick="setFilter('${v}')">${l}</button>`).join('')}
+</div>
+<div class="card" style="margin-top:0" id="patient-list">
+${renderPatientRows(recs)}
+</div><div style="height:20px"></div>
+</div>
+<button class="fab" onclick="openNew()">+</button>
+${navBar()}
+</div>`;
+}
+
+function renderPatientRows(recs){
+  if(!recs.length) return`<div class="empty"><span>🔍</span><p>Sin resultados.<br>Prueba otro término o agrega un paciente.</p></div>`;
+  return recs.map(r=>`<div class="pi" onclick="openDetail('${r.id}')"><div class="av">${r.nombre.charAt(0).toUpperCase()}</div><div class="pi-info"><div class="pi-n">${r.nombre}</div><div class="pi-s">${r.empresa||'—'} · Ctrl ${r.control||'—'} · ${r.ciudad||'—'}</div></div><div class="pi-r"><div class="pi-amt">${fmt(tvp(r))}</div><span class="bdg ${estp(r)}">${elbl(estp(r))}</span></div></div>`).join('');
+}
+
+// Search without full re-render
+function filterList(){
+  const q=S.search.toLowerCase();
+  const recs=S.records.filter(r=>{
+    const m=!q||r.nombre.toLowerCase().includes(q)||r.cedula.includes(q)||(r.empresa||'').toLowerCase().includes(q)||r.control.includes(q)||(r.ciudad||'').toLowerCase().includes(q);
+    return m&&(S.filter==='all'||estp(r)===S.filter);
+  }).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const el=document.getElementById('patient-list');
+  if(el) el.innerHTML=renderPatientRows(recs);
+}
+
+function setFilter(v){
+  S.filter=v;
+  // Update chip styles without full re-render
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.toggle('on',c.textContent===({all:'Todos',pending:'Pendiente',partial:'Parcial',paid:'Pagado'}[v]));
+  });
+  filterList();
+}
+
+function vForm(){
+  const f=S.form;
+  const tot=tvp(f);
+  const ai=parseFloat(f.abonoInicial)||0;
+  const sd=Math.max(0,tot-ai);
+  const pct=tot>0?Math.min(100,(ai/tot)*100):0;
+  const isNew=S.view==='new';
+  const saldoCls=sd===0&&tot>0?'ro-green':ai>0&&sd>0?'ro-amber':'ro-red';
+
+  return`
+<div class="screen">
+<div class="topbar">
+  <button class="back-btn" onclick="go({view:'list'})">‹ Volver</button>
+  <div style="text-align:right"><div class="topbar-title">${isNew?'Nuevo paciente':'Editar'}</div></div>
+</div>
+<div class="scroll"><div class="fw">
+
+<div class="sl">Identificación</div>
+<div class="fr">
+  <div class="f"><label>N° Control (tarjeta)</label><input id="fi-control" value="${esc(f.control)}" onchange="sf('control',this.value)" placeholder="001"/></div>
+  <div class="f"><label>Fecha jornada</label><input id="fi-fecha" type="date" value="${f.fecha}" onchange="sf('fecha',this.value)"/></div>
+</div>
+
+<div class="sl">Datos del paciente</div>
+<div class="f"><label>Nombre completo *</label><input id="fi-nombre" value="${esc(f.nombre)}" onchange="sf('nombre',this.value)" placeholder="Nombre completo"/></div>
+<div class="fr">
+  <div class="f"><label>Cédula</label><input id="fi-cedula" type="tel" value="${esc(f.cedula)}" onchange="sf('cedula',this.value)" placeholder="12345678"/></div>
+  <div class="f"><label>Edad</label><input id="fi-edad" type="number" value="${esc(f.edad)}" onchange="sf('edad',this.value)" placeholder="35"/></div>
+</div>
+<div class="f"><label>Correo personal</label><input id="fi-correo" type="email" value="${esc(f.correo)}" onchange="sf('correo',this.value)" placeholder="ejemplo@correo.com"/></div>
+<div class="f"><label>Teléfono</label><input id="fi-telefono" type="tel" value="${esc(f.telefono)}" onchange="sf('telefono',this.value)" placeholder="300 000 0000"/></div>
+<div class="f"><label>Dirección</label><input id="fi-direccion" value="${esc(f.direccion)}" onchange="sf('direccion',this.value)" placeholder="Calle 10 # 5-20"/></div>
+<div class="f"><label>Ciudad</label><input id="fi-ciudad" value="${esc(f.ciudad)}" onchange="sf('ciudad',this.value)" placeholder="Bogotá"/></div>
+
+<div class="sl">Empresa</div>
+<div class="f"><label>Nombre empresa</label><input id="fi-empresa" value="${esc(f.empresa)}" onchange="sf('empresa',this.value)" placeholder="Empresa S.A.S."/></div>
+<div class="f"><label>NIT empresa</label><input id="fi-nit" type="tel" value="${esc(f.nit)}" onchange="sf('nit',this.value)" placeholder="900123456-1"/></div>
+
+<div class="sl">Fórmula óptica</div>
+<div class="ftbl">
+  <div class="fr2"><div class="fc hd"></div><div class="fc hd">Esfera</div><div class="fc hd">Cilindro</div><div class="fc hd">Eje</div><div class="fc hd">Adición</div></div>
+  <div class="fr2"><div class="fc ey">OD</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input id="fi-od-${k}" value="${esc(f.od[k])}" onchange="sfx('od','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
+  <div class="fr2"><div class="fc ey">OI</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc"><input id="fi-oi-${k}" value="${esc(f.oi[k])}" onchange="sfx('oi','${k}',this.value)" placeholder="—" inputmode="decimal"/></div>`).join('')}</div>
+</div>
+
+<div class="sl">Lente y montura</div>
+<div class="fr">
+  <div class="f"><label>Laboratorio</label>
+  <select id="fi-laboratorio" onchange="sf('laboratorio',this.value)">
+    <option value="" ${!f.laboratorio?'selected':''}>Seleccionar…</option>
+    ${['Sol de Oro','Servioptica','Vértice'].map(t=>`<option value="${t}" ${f.laboratorio===t?'selected':''}>${t}</option>`).join('')}
+  </select></div>
+  <div class="f"><label>N° Orden laboratorio</label><input id="fi-ordenLab" value="${esc(f.ordenLab)}" onchange="sf('ordenLab',this.value)" placeholder="ORD-001"/></div>
+</div>
+<div class="f"><label>Tipo de lente</label><input id="fi-tipoLente" value="${esc(f.tipoLente)}" onchange="sf('tipoLente',this.value)" placeholder="Ej: Monofocal, Progresivo…"/></div>
+<div class="fr">
+  <div class="f"><label>Valor lente ($)</label><input id="fi-valorLente" type="number" inputmode="numeric" value="${esc(f.valorLente)}" oninput="sfn('valorLente',this.value)" placeholder="0"/></div>
+  <div class="f"><label>Total venta</label><input id="c-total" readonly class="ro-blue" value="${fmt(tot)}"/></div>
+</div>
+<div class="f"><label>Montura (marca / referencia)</label><input id="fi-montura" value="${esc(f.montura)}" onchange="sf('montura',this.value)" placeholder="Ray-Ban RB3025…"/></div>
+<div class="f"><label>Valor montura ($)</label><input id="fi-valorMontura" type="number" inputmode="numeric" value="${esc(f.valorMontura)}" oninput="sfn('valorMontura',this.value)" placeholder="0"/></div>
+
+<div class="sl">💵 Abono y saldo</div>
+<div class="fr">
+  <div class="f"><label>Abono inicial ($)</label><input id="fi-abonoInicial" type="number" inputmode="numeric" value="${esc(f.abonoInicial)}" oninput="sfn('abonoInicial',this.value)" placeholder="0 — paga hoy"/></div>
+  <div class="f"><label>Saldo pendiente</label><input id="c-saldo" readonly class="${tot>0?saldoCls:''}" value="${tot>0?fmt(sd):'—'}"/></div>
+</div>
+
+<div id="saldo-box" class="sb" style="display:${tot>0?'grid':'none'}">
+  <div class="sbi"><div class="sbl">Total</div><div class="sbv" id="sb-tot" style="color:var(--blue2)">${fmt(tot)}</div></div>
+  <div class="sbi"><div class="sbl">Abono</div><div class="sbv" id="sb-ab" style="color:var(--green)">${fmt(ai)}</div></div>
+  <div class="sbi"><div class="sbl">Debe</div><div class="sbv" id="sb-sd" style="color:${sd===0?'var(--green)':ai>0?'var(--amber)':'var(--red)'}">${fmt(sd)}</div></div>
+</div>
+<div id="pw-form" style="display:${tot>0?'block':'none'};margin-bottom:14px">
+  <div class="pb" style="height:6px"><div id="pf-form" class="pf ${pct>=100?'done':pct>0?'mid':''}" style="width:${pct}%"></div></div>
+  <div id="pl-form" style="font-size:10.5px;color:var(--gray2);margin-top:4px;text-align:right">${pct.toFixed(0)}% pagado al registrar</div>
+</div>
+
+<button class="save-btn" onclick="doSave()">💾 Guardar paciente</button>
+<div style="height:36px"></div>
+</div></div>
+</div>`;
+}
+
+function vDetail(){
+  const p=S.detail; if(!p)return'';
+  const v=tvp(p),a=tap(p),s=tsp(p);
+  const pct=v?Math.min(100,(a/v)*100):0;
+  const e=estp(p);
+  return`
+<div class="ov" onclick="if(event.target===this){S.detail=null;render();}">
+<div class="sh">
+<div class="sh-hnd"></div>
+<div class="sh-head"><div><h2>${p.nombre}</h2><div style="font-size:12px;color:var(--gray2);margin-top:2px">${p.empresa||''}${p.ciudad?' · '+p.ciudad:''}</div></div><span class="bdg ${e}">${elbl(e)}</span></div>
+<div class="sh-scr">
+<div class="cb">
+  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--blue2)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+  <div><div class="cb-l">Control</div><div class="cb-v">${p.control||'—'}</div></div>
+  <div style="margin-left:auto;text-align:right"><div class="cb-l">Fecha</div><div style="font-size:14px;font-weight:700">${p.fecha}</div></div>
+</div>
+<div class="sl2">Paciente</div>
+${dr('Cédula',p.cedula)}${dr('Correo',p.correo)}${dr('Edad',p.edad?p.edad+' años':null)}${dr('Teléfono',p.telefono)}${dr('Dirección',p.direccion)}${dr('NIT empresa',p.nit)}
+<div class="sl2">Fórmula óptica</div>
+<div class="ftbl" style="margin-bottom:12px">
+  <div class="fr2"><div class="fc hd"></div><div class="fc hd">Esfera</div><div class="fc hd">Cilindro</div><div class="fc hd">Eje</div><div class="fc hd">Adición</div></div>
+  ${['od','oi'].map(eye=>`<div class="fr2"><div class="fc ey">${eye.toUpperCase()}</div>${['esfera','cilindro','eje','adicion'].map(k=>`<div class="fc" style="font-size:13px;color:${p[eye][k]?'var(--white)':'var(--gray)'}">${p[eye][k]||'—'}</div>`).join('')}</div>`).join('')}
+</div>
+<div class="sl2">Venta</div>
+${dr('Laboratorio',p.laboratorio)}${dr('N° Orden lab.',p.ordenLab)}${dr('Tipo de lente',p.tipoLente)}${dr('Montura / Ref.',p.montura)}${dr('Valor lente',fmt(p.valorLente))}${dr('Valor montura',fmt(p.valorMontura))}${dr('Total venta','<span style="color:var(--blue2);font-weight:800">'+fmt(v)+'</span>')}
+<div class="sl2">Pagos</div>
+<div class="sb">
+  <div class="sbi"><div class="sbl">Total</div><div class="sbv" style="color:var(--blue2)">${fmt(v)}</div></div>
+  <div class="sbi"><div class="sbl">Abonado</div><div class="sbv" style="color:var(--green)">${fmt(a)}</div></div>
+  <div class="sbi"><div class="sbl">Saldo</div><div class="sbv" style="color:${s<=0?'var(--green)':a>0?'var(--amber)':'var(--red)'}">${fmt(Math.max(0,s))}</div></div>
+</div>
+<div class="pb" style="height:6px"><div class="pf ${pct>=100?'done':pct>0?'mid':''}" style="width:${pct}%"></div></div>
+<div style="font-size:10.5px;color:var(--gray2);margin-top:4px;text-align:right;margin-bottom:10px">${pct.toFixed(0)}% pagado</div>
+${p.abonos&&p.abonos.length?`<div class="ab-list">${p.abonos.map(ab=>`<div class="ab-item"><div><div class="ab-amt">${fmt(ab.monto)}</div><div class="ab-dt">${ab.fecha}</div></div><button class="ab-del" onclick="delAbono('${p.id}','${ab.id}')">✕</button></div>`).join('')}</div>`:''}
+${s>0?`<div class="ab-form">
+<div class="ab-ttl">Registrar abono</div>
+<div class="fr">
+  <div class="f"><label>Valor ($)</label><input id="ab-amt-i" type="number" inputmode="numeric" value="${esc(S.abAmt)}" placeholder="0"/></div>
+  <div class="f"><label>Fecha</label><input id="ab-fecha-i" type="date" value="${S.abFecha}"/></div>
+</div>
+<button class="save-btn" style="font-size:14px;padding:13px" onclick="doAbono()">💵 Registrar abono</button>
+</div>`:`<div style="background:var(--green2);border-radius:var(--r2);padding:12px;text-align:center;font-size:14px;font-weight:700;color:var(--green);margin-top:12px">🎉 ¡Deuda saldada!</div>`}
+<div style="height:8px"></div>
+</div>
+<div class="sh-foot">
+  <button style="flex:0 0 auto;padding:12px 16px;background:var(--red2);color:var(--red);border:none;border-radius:var(--r2);font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer" onclick="doDel('${p.id}')">Eliminar</button>
+  <button style="flex:1;background:var(--bg3);color:var(--gray3);border:1px solid var(--border2);border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer" onclick="S.detail=null;render()">Cerrar</button>
+  <button style="flex:1;background:var(--blue);color:white;border:none;border-radius:var(--r2);font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer" onclick="openEdit('${p.id}')">Editar</button>
+</div>
+</div></div>`;
+}
+
+function dr(label,value){return`<div class="dr"><span class="dr-l">${label}</span><span class="dr-v">${value||'—'}</span></div>`;}
+
+function navBar(){
+  const v=S.view;
+  return`<div class="bottomnav">
+<button class="bn${v==='home'?' on':''}" onclick="go({view:'home'})"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</button>
+<button class="bn${v==='list'?' on':''}" onclick="go({view:'list'})"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes</button>
+<button class="bn" onclick="openNew()"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nuevo</button>
+</div>`;
+}
+
+function render(){
+  let html='';
+  if(S.view==='home')      html=vHome();
+  else if(S.view==='list') html=vList();
+  else                     html=vForm();
+  const sheet=S.detail?vDetail():'';
+  app.innerHTML=html+sheet;
+}
+
+window.sf=sf;window.sfx=sfx;window.sfn=sfn;window.go=go;
+window.doSave=doSave;window.doDel=doDel;window.doAbono=doAbono;window.delAbono=delAbono;
+window.openDetail=openDetail;window.openNew=openNew;window.openEdit=openEdit;
+window.filterList=filterList;window.setFilter=setFilter;window.S=S;
+window.doExport=doExport;window.doImport=doImport;
+
+render();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+function doExport(){
+  if(!window.XLSX){showToast('⚠️ Espera un momento e intenta de nuevo');return;}
+  const rows=S.records.map(p=>({
+    'Control':p.control,'Fecha':p.fecha,'Nombre':p.nombre,'Cédula':p.cedula,
+    'Correo':p.correo,'Edad':p.edad,'Teléfono':p.telefono,'Dirección':p.direccion,
+    'Ciudad':p.ciudad,'NIT Empresa':p.nit,'Empresa':p.empresa,
+    'OD Esfera':p.od.esfera,'OD Cilindro':p.od.cilindro,'OD Eje':p.od.eje,'OD Adición':p.od.adicion,
+    'OI Esfera':p.oi.esfera,'OI Cilindro':p.oi.cilindro,'OI Eje':p.oi.eje,'OI Adición':p.oi.adicion,
+    'Laboratorio':p.laboratorio,'N° Orden Lab.':p.ordenLab,
+    'Tipo Lente':p.tipoLente,'Valor Lente':parseFloat(p.valorLente)||0,
+    'Montura':p.montura,'Valor Montura':parseFloat(p.valorMontura)||0,
+    'Total Venta':tvp(p),'Total Abonado':tap(p),'Saldo Pendiente':Math.max(0,tsp(p)),
+    'Estado':elbl(estp(p)),
+    'Abonos':p.abonos.map(a=>a.fecha+': $'+a.monto).join(' | '),
+  }));
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=Object.keys(rows[0]||{}).map(()=>({wch:18}));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Jornadas');
+  XLSX.writeFile(wb,'HR_Vision_Jornadas_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('✅ Excel descargado');
+}
+
+function doImport(){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='.xlsx,.xls';
+  inp.onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const wb=XLSX.read(ev.target.result,{type:'binary'});
+        const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        const imp=rows.map(r=>({
+          id:uid(),control:String(r['Control']||''),nombre:r['Nombre']||'',fecha:r['Fecha']||tod(),
+          cedula:String(r['Cédula']||''),correo:r['Correo']||'',nit:String(r['NIT Empresa']||''),
+          empresa:r['Empresa']||'',edad:String(r['Edad']||''),telefono:String(r['Teléfono']||''),
+          direccion:r['Dirección']||'',ciudad:r['Ciudad']||'',
+          od:{esfera:String(r['OD Esfera']||''),cilindro:String(r['OD Cilindro']||''),eje:String(r['OD Eje']||''),adicion:String(r['OD Adición']||'')},
+          oi:{esfera:String(r['OI Esfera']||''),cilindro:String(r['OI Cilindro']||''),eje:String(r['OI Eje']||''),adicion:String(r['OI Adición']||'')},
+          laboratorio:r['Laboratorio']||'',ordenLab:String(r['N° Orden Lab.']||''),
+          tipoLente:r['Tipo Lente']||'',valorLente:r['Valor Lente']||'',
+          montura:r['Montura']||'',valorMontura:r['Valor Montura']||'',
+          abonoInicial:'',
+          abonos:r['Abonos']?String(r['Abonos']).split('|').filter(Boolean).map(s=>{
+            const[fecha,resto]=(s.trim()).split(':');
+            return{id:uid(),fecha:(fecha||'').trim(),monto:parseFloat((resto||'').replace(/[^0-9.]/g,''))||0};
+          }):[],
+        }));
+        if(confirm('¿Importar '+imp.length+' registros? Se añadirán a los actuales.')){
+          S.records=[...S.records,...imp];
+          save(S.records);
+          showToast('✅ '+imp.length+' registros importados');
+          render();
+        }
+      }catch(err){showToast('❌ Error al leer el archivo');}
+    };
+    reader.readAsBinaryString(file);
+  };
+  inp.click();
+}
+</script>
+</body>
+</html>
